@@ -1,0 +1,56 @@
+@layer components {
+  .intel-topbar {
+    position: relative; grid-row: 1; z-index: 1000; display: grid; height: var(--topbar-height);
+    grid-template-columns: 210px minmax(300px, 1fr) minmax(260px, 480px) 48px 48px; align-items: center; gap: 24px;
+    padding: 0 24px; border-bottom: 1px solid var(--color-divider); background: rgb(11 16 20 / 96%);
+  }
+  .intel-brand {
+    display: flex; min-width: 0; align-items: center; gap: 8px; overflow: hidden; padding: 0; border: 0; color: var(--color-text); background: transparent; cursor: pointer;
+    font-family: var(--font-heading); font-size: 22px; font-weight: 600; text-align: left; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .intel-brand__mark { width: 24px; height: 24px; flex: 0 0 24px; object-fit: contain; }
+  .intel-brand__text { display: flex; min-width: 0; flex-direction: column; }
+  .intel-brand__text strong { font-weight: 600; line-height: 1.1; }
+  .intel-brand__text small { overflow: hidden; color: var(--color-text-secondary); font-family: var(--font-body); font-size: 12px; font-weight: 400; text-overflow: ellipsis; }
+  .intel-topbar > .intel-search-toggle { display: none; }
+  .intel-brand:hover { color: var(--color-cyan); }
+  .intel-language-button { display: flex; width: 48px; height: 40px; align-items: center; justify-content: center; gap: 3px; padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text-secondary); background: transparent; cursor: pointer; font-family: var(--font-mono); font-size: 11px; }
+  .intel-language-button:hover, .intel-language-button:focus-visible { border-color: var(--color-cyan); color: var(--color-cyan); }
+  .intel-tabs { display: flex; min-width: 0; align-items: stretch; height: 40px; gap: 4px; overflow: hidden; }
+  .intel-tabs button { min-width: 0; flex: 1 1 0; padding: 0 12px; border: 0; border-radius: var(--radius-sm); color: var(--color-text-secondary); background: transparent; cursor: pointer; font-weight: 500; }
+  .intel-tabs button:hover { color: var(--color-text); background: var(--color-surface-raised); }
+  .intel-tabs button.is-active { color: var(--color-text); background: var(--color-surface-raised); box-shadow: inset 0 -2px 0 var(--color-cyan); }
+  .intel-language-button span { line-height: 1; }
+
+  .intel-workspace {
+    position: relative; grid-row: 3; min-width: 0; min-height: 0;
+    overflow: hidden; background: var(--color-page);
+  }
+
+  .archive-screen, .calendar-view, .data-view {
+    position: absolute; inset: 0; padding: 24px; overflow: hidden; background: var(--color-page);
+  }
+
+  .intel-surface-heading, .surface-heading {
+    display: flex; height: 72px; align-items: flex-start; justify-content: space-between;
+    gap: 24px; padding: 0 0 16px; border-bottom: 1px solid var(--color-divider);
+  }
+  .intel-surface-heading h1, .surface-heading h1 { margin: 4px 0 0; color: var(--color-text); font-size: var(--text-title); line-height: 1; }
+  .intel-surface-heading > div:first-child, .surface-heading > div:first-child { min-width: 0; }
+  .section-code { display: block; color: var(--color-text-muted); font-size: var(--text-meta); font-weight: 500; letter-spacing: .04em; }
+
+  .intel-statusbar {
+    position: relative; grid-row: 4; z-index: 1100; display: grid; height: var(--statusbar-height);
+    grid-template-columns: minmax(260px, 1.4fr) minmax(180px, 1fr) 140px 110px; align-items: center;
+    border-top: 1px solid var(--color-divider); color: var(--color-text-muted); background: var(--color-surface);
+    font-size: 12px;
+  }
+  .intel-statusbar span { display: flex; height: 100%; align-items: center; gap: 7px; padding: 0 16px; border-right: 1px solid var(--color-divider); }
+  .intel-statusbar__source { min-width: 0; }
+  .intel-statusbar__source-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: inherit; }
+  .intel-statusbar__source a, .intel-statusbar__source > svg { flex-shrink: 0; }
+  .intel-statusbar__source a { white-space: nowrap; text-decoration: underline; }
+  .intel-statusbar strong { color: var(--color-text-secondary); font-family: var(--font-mono); font-weight: 500; }
+  .intel-statusbar__online { justify-content: center; border-right: 0 !important; color: var(--color-green) !important; }
+  .intel-statusbar__online i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+}

@@ -1,0 +1,47 @@
+@layer tokens {
+  :root {
+    color-scheme: dark;
+    --color-page: #0b1014;
+    --color-surface: #11191e;
+    --color-surface-raised: #162127;
+    --color-surface-hover: #1b2930;
+    --color-divider: #293940;
+    --color-border: var(--color-divider);
+    --color-text: #e5ecef;
+    --color-text-secondary: #a9bac2;
+    --color-text-muted: #8fa2ac;
+    --color-cyan: #42d6df;
+    --color-cyan-soft: #8ee9ed;
+    --color-amber: #f2c14e;
+    --color-green: #63d98b;
+    --color-red: #e16b68;
+    --color-blue: #72a9df;
+
+    /* Compatibility aliases used by the map and deferred views. */
+    --black: var(--color-page);
+    --panel: var(--color-surface);
+    --panel-solid: var(--color-surface);
+    --cyan: var(--color-cyan);
+    --cyan-muted: #79cbd0;
+    --cyan-dim: #3d747b;
+    --amber: var(--color-amber);
+    --green: var(--color-green);
+    --resistance: var(--color-blue);
+    --red: var(--color-red);
+    --text: var(--color-text);
+    --muted: var(--color-text-muted);
+    --line: var(--color-divider);
+
+    --font-body: "IBM Plex Sans", system-ui, sans-serif;
+    --font-heading: "Rajdhani", var(--font-body);
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --text-meta: 13px;
+    --text-body: 14px;
+    --text-title: 28px;
+    --topbar-height: 64px;
+    --statusbar-height: 36px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --shadow-panel: 0 16px 36px rgb(0 0 0 / 18%);
+  }
+}

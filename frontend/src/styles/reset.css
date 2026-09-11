@@ -1,0 +1,24 @@
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { min-width: 320px; background: var(--color-page); }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    background: var(--color-page);
+  }
+
+  button, input, select { font: inherit; letter-spacing: 0; }
+  button, a, select { -webkit-tap-highlight-color: transparent; }
+  button { color: inherit; }
+  a { color: inherit; }
+  img { max-width: 100%; }
+
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+  }
+}

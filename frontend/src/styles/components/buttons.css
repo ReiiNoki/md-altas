@@ -1,0 +1,20 @@
+@layer components {
+  .command-button, .archive-tools button {
+    display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 8px;
+    padding: 0 14px; border: 1px solid var(--color-cyan); border-radius: var(--radius-sm);
+    color: var(--color-cyan); background: transparent; cursor: pointer; font-weight: 500; text-decoration: none;
+  }
+  .command-button:hover, .archive-tools button:hover, .command-button:focus-visible { color: var(--color-page); background: var(--color-cyan); }
+  .command-button.is-disabled { cursor: not-allowed; opacity: .5; }
+  .icon-button, .intel-tool-button {
+    display: grid; width: 40px; height: 40px; place-items: center; padding: 0;
+    border: 1px solid var(--color-divider); border-radius: var(--radius-sm); color: var(--color-text-secondary);
+    background: transparent; cursor: pointer;
+  }
+  .icon-button:hover, .intel-tool-button:hover, .intel-tool-button[aria-expanded="true"] { border-color: var(--color-cyan); color: var(--color-cyan); background: var(--color-surface-raised); }
+  .intel-tool-button { position: relative; }
+  .intel-tool-button span { position: absolute; top: -6px; right: -6px; display: grid; min-width: 18px; height: 18px; place-items: center; padding: 0 5px; border-radius: 999px; color: var(--color-page); background: var(--color-cyan); font-family: var(--font-mono); font-size: 11px; font-weight: 600; }
+  .icon-button--quiet { border: 0; }
+  .load-more { width: 100%; min-height: 48px; border: 0; border-top: 1px solid var(--color-divider); color: var(--color-cyan); background: var(--color-surface); cursor: pointer; }
+  .load-more span { margin-left: 8px; color: var(--color-text-muted); font-family: var(--font-mono); font-size: 12px; }
+}

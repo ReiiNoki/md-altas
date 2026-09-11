@@ -1,0 +1,46 @@
+@layer components {
+  .detail-panel { position: relative; display: grid; min-width: 0; min-height: 0; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; color: var(--color-text); background: var(--color-surface-raised); }
+  .intel-workspace--map > .detail-panel, .archive-layout > .detail-panel {
+    pointer-events: none; opacity: 0; transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .intel-workspace--map > .detail-panel.is-open, .archive-layout > .detail-panel.is-open { pointer-events: auto; opacity: 1; }
+  .intel-workspace--map > .detail-panel { position: absolute; top: 16px; right: 16px; z-index: 510; width: 400px; max-height: calc(100% - 32px); overflow: hidden; transform: translateX(20px); box-shadow: var(--shadow-panel); }
+  .intel-workspace--map > .detail-panel.is-open { transform: translateX(0); }
+
+  .detail-panel__heading { display: flex; min-width: 0; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 24px 16px; border-bottom: 1px solid var(--color-divider); background: var(--color-surface-raised); }
+  .detail-panel__heading > div { min-width: 0; overflow-wrap: anywhere; }
+  .detail-panel__heading > button { flex: 0 0 auto; }
+  .detail-panel__body { min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 20px 24px 24px; scrollbar-width: thin; }
+  .detail-panel__body > .detail-art { margin: 0 0 20px; }
+  .detail-panel__body > .event-facts { grid-template-columns: minmax(0, 1fr); }
+  .detail-panel__body .event-facts > div:nth-child(odd) { margin-right: 0; }
+  .detail-panel__body .event-facts dd { white-space: normal; overflow-wrap: anywhere; }
+  .detail-panel__heading h2 { margin: 4px 0 0; color: var(--color-text); font-size: 24px; line-height: 1.1; }
+  .detail-panel__heading p { margin: 4px 0 0; color: var(--color-text-secondary); font-size: 14px; }
+
+  .detail-actions { display: grid; grid-template-columns: 1fr 44px; gap: 8px; margin-top: 20px; }
+  .detail-actions__map { width: 44px; height: 40px; }
+  .mission-list { margin-top: 24px; padding-bottom: 24px; }
+  .mission-list__header { display: flex; height: 36px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--color-divider); color: var(--color-text-secondary); font-size: 12px; }
+  .mission-row { display: grid; min-height: 58px; grid-template-columns: 32px minmax(0, 1fr) 62px; align-items: center; gap: 8px; border-bottom: 1px solid var(--color-divider); text-decoration: none; }
+  .mission-row:hover { background: var(--color-surface-hover); }
+  .mission-row__index { color: var(--color-text-muted); font-family: var(--font-mono); font-size: 12px; }
+  .mission-row__main { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
+  .mission-row__main strong { display: -webkit-box; overflow: hidden; color: var(--color-text); font-size: 14px; font-weight: 500; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .mission-row__main small { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--color-text-muted); font-size: var(--text-meta); }
+  .mission-row__main small > span { display: inline-flex; align-items: center; gap: 3px; }
+  .mission-row__rating { display: flex; align-items: center; justify-content: flex-end; gap: 4px; color: var(--color-amber); font-family: var(--font-mono); font-size: 12px; }
+  .archive-layout > .detail-panel { height: 100%; transform: translateX(20px); box-shadow: var(--shadow-panel); }
+  .archive-layout > .detail-panel.is-open { transform: translateX(0); }
+  .calendar-activity-panel > .detail-panel { height: 100%; }
+
+  @media (max-width: 760px) {
+    .detail-panel { grid-template-rows: auto minmax(0, 1fr); }
+    .detail-panel__heading { min-height: 72px; padding: 18px 20px 12px; }
+    .detail-panel__heading h2 { font-size: 22px; }
+    .detail-panel__body { padding: 16px 20px calc(24px + env(safe-area-inset-bottom, 0px)); }
+    .archive-layout > .detail-panel, .intel-workspace--map > .detail-panel { height: auto; max-height: none; }
+    .mission-list { padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)); }
+    .mission-row { min-height: 64px; grid-template-columns: 30px minmax(0, 1fr) 58px; }
+  }
+}
