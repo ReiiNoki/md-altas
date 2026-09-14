@@ -1,19 +1,23 @@
-# Dependencies and generated build/cache files
+# Dependencies, builds and caches
 node_modules/
 dist/
-.venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
+coverage/
+.vite/
+*.tsbuildinfo
 
-# Local maintenance tools, raw data and historical design notes stay local.
-# These rules are root-anchored: frontend/public/data/, frontend/src/data/
-# and frontend/docs/data/ MUST remain in Git.
-/data-tools/
-/docs/
-/data/
+# Local environment; examples must contain placeholders only
+.env
+.env.*
+!.env.example
 
-# Logs, temporary files, local screenshots and backups
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs, local captures and temporary files
 *.log
 *.pid
 /.tmp/
@@ -25,19 +29,7 @@ __pycache__/
 *.backup
 *~
 
-# Personal editor settings and operating-system metadata
-.vscode/
-.DS_Store
-Thumbs.db
-Desktop.ini
-
-# Environment variables; examples must contain placeholders only
-.env
-.env.*
-!.env.example
-
-# Local credentials and session exports, including inside frontend/.
-# Do not ignore application JSON files or all data/ directories.
+# Credentials and session exports
 .secrets/
 secrets/
 auth.json

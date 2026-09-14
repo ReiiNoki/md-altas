@@ -1,8 +1,13 @@
 {
-  "name": "mission-day-archive",
+  "name": "md-atlas",
   "private": true,
   "version": "0.1.0",
+  "description": "An interactive Ingress Mission Day archive built with React, Vite and MapLibre GL.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReiiNoki/md-altas.git"
+  },
   "engines": {
     "node": ">=22"
   },
