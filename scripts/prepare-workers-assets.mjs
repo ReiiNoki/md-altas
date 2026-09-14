@@ -51,7 +51,7 @@ export async function prepareWorkersAssets(source, destination, basePath = BASE_
     await copyFile(join(source, name), target);
   }
   // Cloudflare SPA fallback always reads /index.html. The same shell references
-  // /md-altas/ assets. Only the configured domain routes reach this Worker;
+  // /md-atlas/ assets. Only the configured domain routes reach this Worker;
   // this file does not replace the existing website's root page.
   await copyFile(join(source, "index.html"), join(destination, "index.html"));
   return files.length + 1;

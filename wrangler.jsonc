@@ -1,15 +1,15 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "md-altas",
+  "name": "md-atlas",
   "compatibility_date": "2026-09-14",
   "workers_dev": true,
   "routes": [
     {
-      "pattern": "reiinoki.dpdns.org/md-altas",
+      "pattern": "reiinoki.dpdns.org/md-atlas",
       "zone_name": "reiinoki.dpdns.org"
     },
     {
-      "pattern": "reiinoki.dpdns.org/md-altas/*",
+      "pattern": "reiinoki.dpdns.org/md-atlas/*",
       "zone_name": "reiinoki.dpdns.org"
     }
   ],

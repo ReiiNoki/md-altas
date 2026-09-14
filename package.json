@@ -6,7 +6,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ReiiNoki/md-altas.git"
+    "url": "git+https://github.com/ReiiNoki/md-atlas.git"
   },
   "engines": {
     "node": ">=22"
