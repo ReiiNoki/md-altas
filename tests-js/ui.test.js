@@ -25,6 +25,21 @@ test("both language titles use MD Atlas and retain the full archive name", () =>
   }
 });
 
+test("footer legal notices are localized and link to Telegram and Ingress", () => {
+  assert.equal(
+    translate("en", "fanSiteDisclaimer"),
+    "This is a fan site and not officially affiliated with Niantic Inc.",
+  );
+  assert.equal(
+    translate("zh", "ingressTrademarkNotice"),
+    "Ingress 是 Niantic Inc. 的注册商标。",
+  );
+  const footer = readFileSync(new URL("../src/components/ArchiveStatusBar.jsx", import.meta.url), "utf8");
+  assert.match(footer, /https:\/\/t\.me\/missiondayatlas/);
+  assert.match(footer, /https:\/\/ingress\.com\//);
+  assert.doesNotMatch(footer, /city-name-credits\.html/);
+});
+
 const tokens = readFileSync(new URL("../src/styles/tokens.css", import.meta.url), "utf8");
 function token(name) {
   const match = tokens.match(new RegExp(`--${name}:\\s*(#[a-f0-9]{6});`, "i"));

@@ -252,9 +252,25 @@ try {
   assert.ok(await visible(".maplibregl-ctrl-attrib"));
   assert.ok(await evaluate(`(() => {
     const footer = document.querySelector('.intel-statusbar').getBoundingClientRect();
-    const credits = document.querySelector('.intel-statusbar__source a').getBoundingClientRect();
-    return credits.left >= 0 && credits.right <= innerWidth && credits.top >= footer.top && credits.bottom <= footer.bottom;
-  })()`), "Place-name credits remain visible in the mobile footer");
+    const content = [
+      document.querySelector('.intel-statusbar__legal'),
+      ...document.querySelectorAll('.intel-statusbar__links a'),
+    ].map((element) => element.getBoundingClientRect());
+    return content.every((rect) =>
+      rect.left >= 0 && rect.right <= innerWidth && rect.top >= footer.top && rect.bottom <= footer.bottom
+    );
+  })()`), "Legal notices and footer links remain visible on mobile");
+  assert.equal(
+    await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://t.me/missiondayatlas\"]').href"),
+    "https://t.me/missiondayatlas",
+  );
+  assert.equal(
+    await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://ingress.com/\"]').href"),
+    "https://ingress.com/",
+  );
+  assert.ok(await evaluate(
+    "document.querySelector('.intel-statusbar__legal').textContent.includes('not officially affiliated')",
+  ));
   const screenshot = await send("Page.captureScreenshot");
   await writeFile(join(artifacts, "map-mobile.png"), Buffer.from(screenshot.data, "base64"));
   await view(2);
@@ -262,6 +278,9 @@ try {
   assert.equal(await evaluate("document.querySelector('.event-row__place strong').textContent"), firstEvent.city);
   await click(".intel-language-button");
   assert.equal(await evaluate("document.querySelector('.event-row__place strong').textContent"), firstCityZh);
+  assert.ok(await evaluate(
+    "document.querySelector('.intel-statusbar__legal').textContent.includes('无官方关联')",
+  ));
   await click(".event-row");
   await waitFor(() => visible(".mission-row"), "mission details");
   assert.equal(await evaluate("document.querySelector('#event-detail-title').textContent"), firstCityZh);
@@ -292,7 +311,14 @@ try {
   await waitFor(() => visible(".map-state--unavailable"), "fallback remount");
   assert.deepEqual(errors, []);
   assert.equal(await evaluate("location.pathname"), BASE_PATH);
-  assert.equal(await evaluate("new URL(document.querySelector('.intel-statusbar__source a').href).pathname"), `${BASE_PATH}city-name-credits.html`);
+  assert.equal(
+    await evaluate("new URL(document.querySelector('.intel-statusbar__links img[src$=\"telegram-logo.svg\"]').src).pathname"),
+    `${BASE_PATH}telegram-logo.svg`,
+  );
+  assert.equal(
+    await evaluate("new URL(document.querySelector('.intel-statusbar__links img[src$=\"ingress-logo.svg\"]').src).pathname"),
+    `${BASE_PATH}ingress-logo.svg`,
+  );
   const resources = await evaluate("performance.getEntriesByType('resource').map(entry => entry.name)");
   const localResources = resources.map((name) => new URL(name)).filter((url) => url.origin === origin);
   assert.ok(localResources.some((url) => url.pathname === `${BASE_PATH}data/archive.json`));
@@ -301,7 +327,7 @@ try {
   }
   await writeFile(join(artifacts, "results.json"), JSON.stringify({
     result: "pass", mode: workers ? "workers" : dev ? "development" : "production", pageUrl, exceptions: errors, cancelledInterceptions, labelReloadAborts,
-    checks: ["map Worker", "rendered bilingual label pixels, rapid toggles and label-only tile re-layout", "popup", "localized cities and language toggle without map remount", "marker selection", "zoom controls", "mobile resize", "four views", "remount", "WebGL2 fallback"],
+    checks: ["map Worker", "rendered bilingual label pixels, rapid toggles and label-only tile re-layout", "popup", "localized cities and language toggle without map remount", "marker selection", "zoom controls", "localized legal footer and links", "mobile resize", "four views", "remount", "WebGL2 fallback"],
     externalTiles: "synthetic bilingual vector tiles", glyphs: "local browser fonts", images: "blocked",
   }, null, 2));
   console.log(`Browser smoke passed. Artifacts: ${artifacts}`);

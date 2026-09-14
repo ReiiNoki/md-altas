@@ -21,7 +21,6 @@ import { useLanguage } from "./i18n.jsx";
 import {
   expandAnalytics,
   filterEvents,
-  getYearRange,
   INITIAL_FILTERS,
 } from "./utils/archive";
 
@@ -112,8 +111,6 @@ export default function App() {
   const selectedEventDetail = selectedEvent
     ? (eventDetails[selectedEvent.id] ?? selectedEvent)
     : null;
-  const coverage = getYearRange(archive.events);
-
   const feedEvents = useMemo(
     () =>
       filteredEvents.filter((event) => feedRegion === "all" || event.region === feedRegion),
@@ -351,7 +348,7 @@ export default function App() {
         ) : null}
       </main>
 
-      <ArchiveStatusBar coverage={coverage} resultCount={filteredEvents.length} />
+      <ArchiveStatusBar />
     </div>
   );
 }

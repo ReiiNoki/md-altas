@@ -10,7 +10,7 @@
     .archive-layout:not(.detail-closed) { grid-template-columns: minmax(0, 1fr) 360px; }
   }
   @media (max-width: 760px) {
-    :root { --statusbar-height: 28px; }
+    :root { --statusbar-height: 82px; }
     body { overflow: hidden; }
     .intel-topbar { height: auto; grid-template-columns: minmax(0, 1fr) repeat(3, 44px); grid-template-rows: 48px 48px; gap: 0 8px; padding: 0 16px; }
     .intel-topbar.has-search { grid-template-rows: 48px 48px 52px; }
@@ -24,9 +24,8 @@
     .intel-search button { width: 44px; height: 44px; flex: 0 0 44px; }
     .intel-tool-button { grid-column: 3; grid-row: 1; align-self: center; width: 44px; height: 44px; }
     .intel-language-button { grid-column: 4; grid-row: 1; align-self: center; width: 44px; height: 44px; }
-    .intel-statusbar { grid-template-columns: 1fr auto; }
-    .intel-statusbar span { padding: 0 10px; }
-    .intel-statusbar span:nth-child(2), .intel-statusbar span:nth-child(3) { display: none; }
+    .intel-statusbar { grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 7px 10px; font-size: 10px; }
+    .intel-statusbar__links { justify-content: flex-start; padding-left: 0; border-left: 0; }
     .archive-screen, .calendar-view, .data-view { padding: 16px; overflow: hidden auto; }
     .archive-screen { overflow: hidden; }
     .intel-surface-heading, .surface-heading { height: 66px; gap: 12px; }

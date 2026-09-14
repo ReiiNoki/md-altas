@@ -40,17 +40,21 @@
   .section-code { display: block; color: var(--color-text-muted); font-size: var(--text-meta); font-weight: 500; letter-spacing: .04em; }
 
   .intel-statusbar {
-    position: relative; grid-row: 4; z-index: 1100; display: grid; height: var(--statusbar-height);
-    grid-template-columns: minmax(260px, 1.4fr) minmax(180px, 1fr) 140px 110px; align-items: center;
+    position: relative; grid-row: 4; z-index: 1100; display: grid; min-height: var(--statusbar-height);
+    grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px; padding: 8px 16px;
     border-top: 1px solid var(--color-divider); color: var(--color-text-muted); background: var(--color-surface);
-    font-size: 12px;
+    font-size: 11px;
   }
-  .intel-statusbar span { display: flex; height: 100%; align-items: center; gap: 7px; padding: 0 16px; border-right: 1px solid var(--color-divider); }
-  .intel-statusbar__source { min-width: 0; }
-  .intel-statusbar__source-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: inherit; }
-  .intel-statusbar__source a, .intel-statusbar__source > svg { flex-shrink: 0; }
-  .intel-statusbar__source a { white-space: nowrap; text-decoration: underline; }
-  .intel-statusbar strong { color: var(--color-text-secondary); font-family: var(--font-mono); font-weight: 500; }
-  .intel-statusbar__online { justify-content: center; border-right: 0 !important; color: var(--color-green) !important; }
-  .intel-statusbar__online i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .intel-statusbar__legal { min-width: 0; }
+  .intel-statusbar__legal p { margin: 0; line-height: 1.4; }
+  .intel-statusbar__links {
+    display: flex; align-items: center; gap: 8px; padding-left: 16px;
+    border-left: 1px solid var(--color-divider); white-space: nowrap;
+  }
+  .intel-statusbar__links a {
+    display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid transparent;
+    border-radius: var(--radius-sm); background: var(--color-surface-raised);
+  }
+  .intel-statusbar__links a:hover, .intel-statusbar__links a:focus-visible { border-color: var(--color-cyan); background: var(--color-surface-hover); }
+  .intel-statusbar__links img { display: block; width: 24px; height: 24px; object-fit: contain; }
 }
