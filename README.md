@@ -35,7 +35,7 @@ npm ci
 npm run dev
 ```
 
-打开终端显示的本地地址。端口被占用时，Vite 会选择下一个可用端口。
+打开终端显示的本地地址，当前入口为 `/md-altas/`。端口被占用时，Vite 会选择下一个可用端口。
 
 ### 常用命令
 
@@ -44,8 +44,9 @@ npm run dev
 | `npm run dev` | 启动开发服务器 |
 | `npm run lint` | 检查应用、配置和测试代码 |
 | `npm test` | 运行 JavaScript 测试 |
-| `npm run build` | 构建到 `dist/` |
+| `npm run build` | 构建到 `dist/`，再生成 `.wrangler/assets/` 静态发布包 |
 | `npm run check` | 依次执行代码检查、测试和构建 |
+| `npm run test:workers` | 检查已有发布包的 Workers 本地 HTTP 行为 |
 | `npm run preview` | 用 Vite 本地预览已有的生产构建 |
 | `npm run preview:cloudflare` | 用 Workers 本地运行时预览已有构建，不连接远程绑定 |
 | `npm run deploy:check` | 校验 Workers 配置和已有构建，不上传或部署 |
@@ -57,7 +58,8 @@ npm run build
 npm run preview
 ```
 
-`preview` 用于本地验收，线上只需托管 `dist/` 中的静态文件。
+`preview` 用于 Vite 本地验收；Cloudflare 部署 `.wrangler/assets/` 中按子路径组织的静态文件。
+两者来自同一次构建，不依赖维护工具或真实数据重生成。
 
 ## 项目结构
 
@@ -72,11 +74,13 @@ public/
   data/             随网站发布的 JSON 档案
   city-name-credits.html
   _headers          静态资源缓存与安全响应头
-scripts/            可选浏览器回归检查
+scripts/            静态发布包生成、Workers HTTP 与可选浏览器回归检查
 tests-js/           JavaScript 测试
 docs/data/          地名来源、核对规则与许可
+docs/DEPLOY_SUBPATH.md  保留现有主站的子路径部署指南
 .github/workflows/  持续集成
-wrangler.jsonc      Workers 静态资源部署配置
+site.config.js      共享基础路径与发布目录
+wrangler.jsonc      Workers 静态资源与窄路由配置
 ```
 
 ## 数据与外部资源
@@ -101,6 +105,7 @@ wrangler.jsonc      Workers 静态资源部署配置
 ```bash
 npm run test:browser      # 构建并检查生产版本
 npm run test:browser:dev  # 检查开发版本
+npm run test:browser:workers  # 构建并检查 Workers 本地版本
 ```
 
 检查覆盖地图 Worker、实际绘制的双语标签、快速语言切换、弹窗、活动详情、四视图、
@@ -111,8 +116,13 @@ npm run test:browser:dev  # 检查开发版本
 
 ## 部署到 Cloudflare Workers
 
-使用 **Workers Static Assets + Git 自动部署**。这是纯静态前端：不需要 Worker 后端脚本、数据库、
-运行时绑定或 Cloudflare Vite 插件。Wrangler 作为开发依赖固定版本，安装依赖后即可使用。
+使用 **Workers Static Assets + Git 自动部署**，目标地址为 **https://reiinoki.dpdns.org/md-altas/**。
+这是纯静态前端：不需要 Worker 后端脚本、数据库、运行时绑定或 Cloudflare Vite 插件。
+Wrangler 作为开发依赖固定版本，安装依赖后即可使用。
+
+**保留域名根部的现有网站，只添加窄 Route，不要把整个域名绑定给本 Worker。**
+配置中包含路由，推送可能触发线上路由更新；部署前请按[子路径部署指南](docs/DEPLOY_SUBPATH.md)
+核对同账户 zone、橙云代理、原站路由，以及仅给 `/md-altas` 补斜杠的 Redirect Rule。
 
 在 Cloudflare 的 **Workers 和 Pages** 页面创建应用，连接 GitHub 仓库 `ReiiNoki/md-altas`，
 按 Workers 的构建和部署流程填写：
@@ -136,16 +146,19 @@ npm run test:browser:dev  # 检查开发版本
 
 此流程没有 Pages 的“框架预设”和“输出目录”字段。`wrangler.jsonc` 显式指定：
 
-- `assets.directory: "./dist"`：只发布构建产物，不能改为整个仓库或直接发布 `public/`。
-- `assets.not_found_handling: "single-page-application"`：为未匹配的路径提供 SPA 入口回退。
+- `assets.directory: "./.wrangler/assets"`：只发布生成的静态包；资源位于包内 `md-altas/`，不能改为整个仓库、整个 `.wrangler/` 或直接发布 `public/`。
+- `assets.not_found_handling: "single-page-application"`：通过包根部的 `index.html` 提供 SPA 回退。
+- `routes`：仅匹配 `reiinoki.dpdns.org/md-altas` 和 `reiinoki.dpdns.org/md-altas/*`，不匹配主站根部。
+- `workers_dev: true`：保留默认预览域名，可访问其 `/md-altas/`。
 - `compatibility_date`：固定运行时兼容行为，后续更新时需重新验证。
 
 Cloudflare 会安装依赖，然后构建、部署。`npm run build` 只构建；`npm run check` 在构建前先运行
 ESLint 和 JavaScript 测试，失败时中止。`check` 不包含浏览器测试，不会抓取或重生成数据。
 
-`public/_headers` 会复制进 `dist/`，Workers 原生支持其中的缓存和安全响应头。
-部署完成后先通过控制台返回的 `*.workers.dev` 地址验收，再绑定自定义域名。
-本地验证不能代替线上域名、第三方地图与图片网络的验收。
+`public/_headers` 会复制到静态发布包根部，缓存规则已适配 `/md-altas/` 前缀。
+部署完成后先通过控制台返回的 `*.workers.dev/md-altas/` 地址验收，再检查正式域名子路径及原主站。
+不应通过添加整个域名的 Custom Domain 来替代路径路由。
+本地验证不能代替线上 DNS、路径规则、第三方地图与图片网络的验收。
 
 ### 本地部署校验
 
@@ -153,6 +166,7 @@ ESLint 和 JavaScript 测试，失败时中止。`check` 不包含浏览器测�
 
 ```bash
 npm run check
+npm run test:workers
 npm run deploy:check
 ```
 
@@ -165,11 +179,12 @@ npm run preview:cloudflare
 打开终端显示的本地地址，结束时按 Ctrl+C。端口冲突时可加 `-- --port 8788`，不要停止其他项目。
 本地缓存 `.wrangler/` 和本地变量文件 `.dev.vars*` 不参与版本控制。
 
-GitHub Actions 运行检查、构建及部署 dry-run，**不会上传到 Cloudflare，也不需要部署密钥**。
+GitHub Actions 运行检查、构建、Workers 本地 HTTP 测试及部署 dry-run，**不会上传到 Cloudflare，也不需要部署密钥**。
 Workers Builds 才负责实际发布；它不会默认等待 GitHub CI，因此构建命令仍采用 `npm run check`。
 后续推送 `main` 会触发生产部署，其他分支仅在启用相应构建后生成预览版本。
 
-其他静态托管平台仍可以部署 `dist/`，但需按对应平台配置 SPA 回退、缓存和安全响应头。
+其他静态托管平台可将 `dist/` 挂载到 `/md-altas/`，并按对应平台配置 SPA 回退、缓存和安全响应头；
+发布到其他路径时需同步修改 `site.config.js` 和相应路径配置后重新构建。
 
 [Workers Builds 配置](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) ·
 [Workers SPA 静态资源配置](https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/)

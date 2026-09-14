@@ -1,13 +1,13 @@
-/assets/*
+/md-altas/assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-/data/archive.json
+/md-altas/data/archive.json
   Cache-Control: public, max-age=300, must-revalidate
 
-/data/analytics.json
+/md-altas/data/analytics.json
   Cache-Control: public, max-age=300, must-revalidate
 
-/data/events/*
+/md-altas/data/events/*
   Cache-Control: public, max-age=3600, must-revalidate
 
 /*

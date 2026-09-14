@@ -13,13 +13,15 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "vite build && node scripts/prepare-workers-assets.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "preview:cloudflare": "wrangler dev --local --ip 127.0.0.1",
     "deploy:check": "wrangler deploy --dry-run --no-autoconfig",
     "test": "node --test \"tests-js/*.test.js\"",
     "test:browser": "npm run build && node scripts/check-map-browser.mjs",
     "test:browser:dev": "node scripts/check-map-browser.mjs --dev",
+    "test:browser:workers": "npm run build && node scripts/check-map-browser.mjs --workers",
+    "test:workers": "node scripts/check-workers.mjs",
     "lint": "eslint .",
     "check": "npm run lint && npm test && npm run build"
   },

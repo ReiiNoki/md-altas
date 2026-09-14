@@ -17,6 +17,7 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: npm ci
       - run: npm run check
+      - run: npm run test:workers
       - run: npm run deploy:check
         env:
           WRANGLER_SEND_METRICS: "false"

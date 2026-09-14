@@ -1,4 +1,4 @@
-// Optional Chromium smoke test against the production build or --dev server,
+// Optional Chromium smoke test against Vite preview, --dev or --workers,
 // without a framework dependency. Requires Node 22+ and Chrome (CHROME_PATH).
 // Bilingual vector fixtures and local fonts exercise actual label rendering offline;
 // banner images are blocked deliberately.
@@ -14,9 +14,13 @@ import { fileURLToPath } from "node:url";
 import { displayCityName } from "../src/utils/locations.js";
 import { MAP_LABEL_SOURCE } from "../src/data/intelMapStyle.js";
 import { labelTile } from "./map-browser-fixtures.mjs";
+import { BASE_PATH } from "../site.config.js";
+import { startWorkersPreview } from "./workers-preview.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const dev = process.argv.includes("--dev");
+const workers = process.argv.includes("--workers");
+assert.ok(!(dev && workers), "Choose only one preview mode.");
 const chromePath = process.env.CHROME_PATH || [
   "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
@@ -39,23 +43,25 @@ const port = await new Promise((resolve, reject) => {
     socket.close(() => resolve(port));
   });
 });
-const origin = `http://127.0.0.1:${port}`;
 const { events: [firstEvent] } = JSON.parse(await readFile(resolve(root, "public/data/archive.json"), "utf8"));
 const firstCityZh = displayCityName(firstEvent.countryCode, firstEvent.city, "zh");
+const workerPreview = workers ? await startWorkersPreview(artifacts) : null;
+const origin = workerPreview?.origin ?? `http://127.0.0.1:${port}`;
+const pageUrl = origin + BASE_PATH;
 const chrome = spawn(chromePath, [
   "--headless=new", "--remote-debugging-port=0", "--no-first-run",
   "--no-default-browser-check", "--disable-background-networking",
   "--use-angle=swiftshader", "--enable-unsafe-swiftshader",
   `--user-data-dir=${profile}`, "about:blank",
 ], { stdio: "ignore" });
-const server = spawn(process.execPath, [
+const server = workers ? null : spawn(process.execPath, [
   resolve(root, "node_modules/vite/bin/vite.js"), ...(dev ? [] : ["preview"]),
   "--host", "127.0.0.1", "--port", String(port), "--strictPort",
 ], { cwd: root, stdio: "ignore" });
 let startupError;
 chrome.on("error", (error) => { startupError = error; });
-server.on("error", (error) => { startupError = error; });
-server.on("exit", (code) => { startupError ??= new Error(`Preview exited: ${code}`); });
+server?.on("error", (error) => { startupError = error; });
+server?.on("exit", (code) => { startupError ??= new Error(`Preview exited: ${code}`); });
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function waitFor(check, label, limit = 30000) {
   const end = Date.now() + limit;
@@ -121,7 +127,7 @@ const visible = (selector) => evaluate(`Boolean(document.querySelector(${JSON.st
 try {
   await waitFor(() => existsSync(join(profile, "DevToolsActivePort")), "Chrome startup");
   const debugPort = (await readFile(join(profile, "DevToolsActivePort"), "utf8")).split(/\r?\n/)[0];
-  await waitFor(() => fetch(origin).then((r) => r.ok).catch(() => false), "preview startup");
+  await waitFor(() => fetch(pageUrl).then((r) => r.ok).catch(() => false), "preview startup");
   const page = await (await fetch(`http://127.0.0.1:${debugPort}/json/new?about:blank`, { method: "PUT" })).json();
   ws = new WebSocket(page.webSocketDebuggerUrl);
   await new Promise((resolve, reject) => {
@@ -178,7 +184,7 @@ try {
       return originalPost.call(this, message, ...args);
     };
   ` });
-  await send("Page.navigate", { url: origin });
+  await send("Page.navigate", { url: pageUrl });
   const mapReady = () => evaluate("Boolean(document.querySelector('.mission-map canvas')) && !document.querySelector('.map-state')");
   await waitFor(mapReady, "map ready (including bundled Worker)");
   await sleep(1200); // Wait for the initial flyTo animation before hit testing.
@@ -285,8 +291,16 @@ try {
   await view(1);
   await waitFor(() => visible(".map-state--unavailable"), "fallback remount");
   assert.deepEqual(errors, []);
+  assert.equal(await evaluate("location.pathname"), BASE_PATH);
+  assert.equal(await evaluate("new URL(document.querySelector('.intel-statusbar__source a').href).pathname"), `${BASE_PATH}city-name-credits.html`);
+  const resources = await evaluate("performance.getEntriesByType('resource').map(entry => entry.name)");
+  const localResources = resources.map((name) => new URL(name)).filter((url) => url.origin === origin);
+  assert.ok(localResources.some((url) => url.pathname === `${BASE_PATH}data/archive.json`));
+  if (!dev) {
+    for (const url of localResources) assert.ok(url.pathname.startsWith(BASE_PATH), `Resource escaped the mount: ${url.pathname}`);
+  }
   await writeFile(join(artifacts, "results.json"), JSON.stringify({
-    result: "pass", mode: dev ? "development" : "production", exceptions: errors, cancelledInterceptions, labelReloadAborts,
+    result: "pass", mode: workers ? "workers" : dev ? "development" : "production", pageUrl, exceptions: errors, cancelledInterceptions, labelReloadAborts,
     checks: ["map Worker", "rendered bilingual label pixels, rapid toggles and label-only tile re-layout", "popup", "localized cities and language toggle without map remount", "marker selection", "zoom controls", "mobile resize", "four views", "remount", "WebGL2 fallback"],
     externalTiles: "synthetic bilingual vector tiles", glyphs: "local browser fonts", images: "blocked",
   }, null, 2));
@@ -303,7 +317,8 @@ try {
   }
   // Only close processes started by this test; never reuse a user's browser.
   chrome.kill();
-  server.kill();
+  if (workerPreview) await workerPreview.stop();
+  else server?.kill();
   for (const task of pending.values()) {
     clearTimeout(task.timer);
     task.reject(new Error("Browser test closing"));
