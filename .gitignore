@@ -3,12 +3,15 @@ node_modules/
 dist/
 coverage/
 .vite/
+.wrangler/
 *.tsbuildinfo
 
 # Local environment; examples must contain placeholders only
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
 
 # Editor and operating-system files
 .vscode/

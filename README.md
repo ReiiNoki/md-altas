@@ -46,7 +46,9 @@ npm run dev
 | `npm test` | 运行 JavaScript 测试 |
 | `npm run build` | 构建到 `dist/` |
 | `npm run check` | 依次执行代码检查、测试和构建 |
-| `npm run preview` | 本地预览已有的生产构建 |
+| `npm run preview` | 用 Vite 本地预览已有的生产构建 |
+| `npm run preview:cloudflare` | 用 Workers 本地运行时预览已有构建，不连接远程绑定 |
+| `npm run deploy:check` | 校验 Workers 配置和已有构建，不上传或部署 |
 
 生产构建预览：
 
@@ -74,6 +76,7 @@ scripts/            可选浏览器回归检查
 tests-js/           JavaScript 测试
 docs/data/          地名来源、核对规则与许可
 .github/workflows/  持续集成
+wrangler.jsonc      Workers 静态资源部署配置
 ```
 
 ## 数据与外部资源
@@ -106,29 +109,70 @@ npm run test:browser:dev  # 检查开发版本
 测试使用独立临时浏览器配置和端口，日志及截图保存在系统临时目录。
 地图使用可控双语瓦片，图片请求被阻断，因此不能替代真实网络和实体设备验收。
 
-## 部署到 Cloudflare Pages
+## 部署到 Cloudflare Workers
 
-在 Cloudflare 创建 **Pages** 项目，连接本 GitHub 仓库：
+使用 **Workers Static Assets + Git 自动部署**。这是纯静态前端：不需要 Worker 后端脚本、数据库、
+运行时绑定或 Cloudflare Vite 插件。Wrangler 作为开发依赖固定版本，安装依赖后即可使用。
+
+在 Cloudflare 的 **Workers 和 Pages** 页面创建应用，连接 GitHub 仓库 `ReiiNoki/md-altas`，
+按 Workers 的构建和部署流程填写：
 
 | 设置 | 值 |
 | --- | --- |
+| Worker 名称 | `md-altas`，与 `wrangler.jsonc` 的 `name` 一致 |
 | 生产分支 | `main` |
-| 框架预设 | React（Vite） |
 | 项目根目录 | **留空，使用仓库根目录** |
 | 构建命令 | `npm run check` |
-| 输出目录 | `dist` |
-| 环境变量 | `NODE_VERSION=22` |
+| 部署命令 | `npx wrangler deploy --no-autoconfig` |
+| 非生产分支部署命令（若启用） | `npx wrangler versions upload` |
+| 构建环境变量 | `NODE_VERSION=22` |
 
-Cloudflare 会安装依赖并运行上述命令。`check` 已包含构建，检查或测试失败时不会发布。
-`public/_headers` 会随构建复制，用于 Pages 的缓存与安全响应头。
-先通过 `*.pages.dev` 地址验收，再在项目的 Custom domains 中绑定域名。
+部署前须将 `wrangler.jsonc`、`package.json` 和锁文件提交推送，并确认构建使用新提交。
+`--no-autoconfig` 与本地部署校验保持一致，明确使用已有静态资源配置，避免自动分析或改造 Vite 项目。
+仅重试不含配置的旧提交，不能解决 `Error parsing file: .../vite.config.js` 错误。
 
-后续推送到 `main` 会触发自动部署。GitHub Actions 只负责检查和构建，不是 Cloudflare 部署脚本；
-Pages 不会默认等待 GitHub CI 结束，因此这里也在部署前执行 `npm run check`。
+如果已经在控制台使用其他 Worker 名称，请同步修改 `wrangler.jsonc` 的 `name`，不要保留不一致的名称。
+通过 GitHub 应用授权仓库即可，不要把 GitHub PAT 或 Cloudflare 密钥写入命令或提交到仓库。
 
-其他静态托管平台同样可以部署 `dist/`，但需按对应平台配置缓存和安全响应头。
+此流程没有 Pages 的“框架预设”和“输出目录”字段。`wrangler.jsonc` 显式指定：
 
-[Cloudflare Pages Git 接入指南](https://developers.cloudflare.com/pages/get-started/git-integration/)
+- `assets.directory: "./dist"`：只发布构建产物，不能改为整个仓库或直接发布 `public/`。
+- `assets.not_found_handling: "single-page-application"`：为未匹配的路径提供 SPA 入口回退。
+- `compatibility_date`：固定运行时兼容行为，后续更新时需重新验证。
+
+Cloudflare 会安装依赖，然后构建、部署。`npm run build` 只构建；`npm run check` 在构建前先运行
+ESLint 和 JavaScript 测试，失败时中止。`check` 不包含浏览器测试，不会抓取或重生成数据。
+
+`public/_headers` 会复制进 `dist/`，Workers 原生支持其中的缓存和安全响应头。
+部署完成后先通过控制台返回的 `*.workers.dev` 地址验收，再绑定自定义域名。
+本地验证不能代替线上域名、第三方地图与图片网络的验收。
+
+### 本地部署校验
+
+以下命令不需要 Cloudflare 登录，也不会发布网站：
+
+```bash
+npm run check
+npm run deploy:check
+```
+
+如需检查 Workers 的本地静态资源路由及响应头，在构建后运行：
+
+```bash
+npm run preview:cloudflare
+```
+
+打开终端显示的本地地址，结束时按 Ctrl+C。端口冲突时可加 `-- --port 8788`，不要停止其他项目。
+本地缓存 `.wrangler/` 和本地变量文件 `.dev.vars*` 不参与版本控制。
+
+GitHub Actions 运行检查、构建及部署 dry-run，**不会上传到 Cloudflare，也不需要部署密钥**。
+Workers Builds 才负责实际发布；它不会默认等待 GitHub CI，因此构建命令仍采用 `npm run check`。
+后续推送 `main` 会触发生产部署，其他分支仅在启用相应构建后生成预览版本。
+
+其他静态托管平台仍可以部署 `dist/`，但需按对应平台配置 SPA 回退、缓存和安全响应头。
+
+[Workers Builds 配置](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) ·
+[Workers SPA 静态资源配置](https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/)
 
 ## 许可与署名
 
