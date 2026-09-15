@@ -268,8 +268,15 @@ try {
     await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://ingress.com/\"]').href"),
     "https://ingress.com/",
   );
+  assert.equal(
+    await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://bannergress.com/\"]').href"),
+    "https://bannergress.com/",
+  );
   assert.ok(await evaluate(
     "document.querySelector('.intel-statusbar__legal').textContent.includes('not officially affiliated')",
+  ));
+  assert.ok(await evaluate(
+    "document.querySelector('.intel-statusbar__legal').textContent.includes('Data is sourced from Bannergress')",
   ));
   const screenshot = await send("Page.captureScreenshot");
   await writeFile(join(artifacts, "map-mobile.png"), Buffer.from(screenshot.data, "base64"));
@@ -280,6 +287,9 @@ try {
   assert.equal(await evaluate("document.querySelector('.event-row__place strong').textContent"), firstCityZh);
   assert.ok(await evaluate(
     "document.querySelector('.intel-statusbar__legal').textContent.includes('无官方关联')",
+  ));
+  assert.ok(await evaluate(
+    "document.querySelector('.intel-statusbar__legal').textContent.includes('数据来源于 Bannergress')",
   ));
   await click(".event-row");
   await waitFor(() => visible(".mission-row"), "mission details");
@@ -318,6 +328,10 @@ try {
   assert.equal(
     await evaluate("new URL(document.querySelector('.intel-statusbar__links img[src$=\"ingress-logo.svg\"]').src).pathname"),
     `${BASE_PATH}ingress-logo.svg`,
+  );
+  assert.equal(
+    await evaluate("new URL(document.querySelector('.intel-statusbar__links img[src$=\"bannergress-logo.png\"]').src).pathname"),
+    `${BASE_PATH}bannergress-logo.png`,
   );
   const resources = await evaluate("performance.getEntriesByType('resource').map(entry => entry.name)");
   const localResources = resources.map((name) => new URL(name)).filter((url) => url.origin === origin);

@@ -31,12 +31,17 @@ test("footer legal notices are localized and link to Telegram and Ingress", () =
     "This is a fan site and not officially affiliated with Niantic Inc.",
   );
   assert.equal(
+    translate("zh", "dataSourceNotice"),
+    "数据来源于 Bannergress 和 Ingress Intel Map。",
+  );
+  assert.equal(
     translate("zh", "ingressTrademarkNotice"),
     "Ingress 是 Niantic Inc. 的注册商标。",
   );
   const footer = readFileSync(new URL("../src/components/ArchiveStatusBar.jsx", import.meta.url), "utf8");
   assert.match(footer, /https:\/\/t\.me\/missiondayatlas/);
   assert.match(footer, /https:\/\/ingress\.com\//);
+  assert.match(footer, /https:\/\/bannergress\.com\//);
   assert.doesNotMatch(footer, /city-name-credits\.html/);
 });
 

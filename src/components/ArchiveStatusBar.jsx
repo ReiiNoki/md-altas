@@ -6,7 +6,7 @@ export function ArchiveStatusBar() {
   return (
     <footer className="intel-statusbar">
       <div className="intel-statusbar__legal">
-        <p>{t("fanSiteDisclaimer")}</p>
+        <p>{t("fanSiteDisclaimer")} {t("dataSourceNotice")}</p>
         <p>{t("ingressTrademarkNotice")}</p>
       </div>
       <nav className="intel-statusbar__links" aria-label={t("footerLinks")}>
@@ -17,6 +17,10 @@ export function ArchiveStatusBar() {
         <a href="https://ingress.com/" target="_blank" rel="noreferrer" title={t("ingressOfficialSite")}>
           <img src={`${import.meta.env.BASE_URL}ingress-logo.svg`} alt="" aria-hidden="true" />
           <span className="sr-only">{t("ingressOfficialSite")}</span>
+        </a>
+        <a href="https://bannergress.com/" target="_blank" rel="noreferrer" title={t("bannergressSite")}>
+          <img src={`${import.meta.env.BASE_URL}bannergress-logo.png`} alt="" aria-hidden="true" />
+          <span className="sr-only">{t("bannergressSite")}</span>
         </a>
       </nav>
     </footer>
