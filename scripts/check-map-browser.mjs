@@ -272,6 +272,10 @@ try {
     await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://bannergress.com/\"]').href"),
     "https://bannergress.com/",
   );
+  assert.equal(
+    await evaluate("document.querySelector('.intel-statusbar__links a[href=\"https://github.com/ReiiNoki/md-atlas\"]').href"),
+    "https://github.com/ReiiNoki/md-atlas",
+  );
   assert.ok(await evaluate(
     "document.querySelector('.intel-statusbar__legal').textContent.includes('not officially affiliated')",
   ));

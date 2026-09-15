@@ -1,3 +1,4 @@
+import { Github } from "lucide-react";
 import { useLanguage } from "../i18n.jsx";
 
 export function ArchiveStatusBar() {
@@ -21,6 +22,10 @@ export function ArchiveStatusBar() {
         <a href="https://bannergress.com/" target="_blank" rel="noreferrer" title={t("bannergressSite")}>
           <img src={`${import.meta.env.BASE_URL}bannergress-logo.png`} alt="" aria-hidden="true" />
           <span className="sr-only">{t("bannergressSite")}</span>
+        </a>
+        <a href="https://github.com/ReiiNoki/md-atlas" target="_blank" rel="noreferrer" title={t("githubRepository")}>
+          <Github size={24} aria-hidden="true" />
+          <span className="sr-only">{t("githubRepository")}</span>
         </a>
       </nav>
     </footer>

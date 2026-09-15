@@ -42,6 +42,7 @@ test("footer legal notices are localized and link to Telegram and Ingress", () =
   assert.match(footer, /https:\/\/t\.me\/missiondayatlas/);
   assert.match(footer, /https:\/\/ingress\.com\//);
   assert.match(footer, /https:\/\/bannergress\.com\//);
+  assert.match(footer, /https:\/\/github\.com\/ReiiNoki\/md-atlas/);
   assert.doesNotMatch(footer, /city-name-credits\.html/);
 });
 

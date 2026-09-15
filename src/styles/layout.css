@@ -53,8 +53,8 @@
   }
   .intel-statusbar__links a {
     display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid transparent;
-    border-radius: var(--radius-sm); background: var(--color-surface-raised);
+    border-radius: var(--radius-sm); color: var(--color-text-secondary); background: var(--color-surface-raised);
   }
-  .intel-statusbar__links a:hover, .intel-statusbar__links a:focus-visible { border-color: var(--color-cyan); background: var(--color-surface-hover); }
-  .intel-statusbar__links img { display: block; width: 24px; height: 24px; object-fit: contain; }
+  .intel-statusbar__links a:hover, .intel-statusbar__links a:focus-visible { border-color: var(--color-cyan); color: var(--color-cyan); background: var(--color-surface-hover); }
+  .intel-statusbar__links img, .intel-statusbar__links svg { display: block; width: 24px; height: 24px; object-fit: contain; }
 }
