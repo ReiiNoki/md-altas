@@ -27,31 +27,27 @@
   .selection-strip strong { overflow: hidden; color: var(--color-text); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
   .selection-strip b { color: var(--color-text-secondary); font-weight: 500; }
 
-  .event-feed { position: absolute; bottom: 20px; left: 20px; z-index: 500; width: min(600px, calc(100vw - 480px)); min-width: 420px; overflow: hidden; border-radius: var(--radius-md); background: rgb(17 25 30 / 94%); box-shadow: var(--shadow-panel); opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms; }
+  .event-feed { position: absolute; bottom: 20px; left: 20px; z-index: 500; width: min(460px, calc(100vw - 480px)); min-width: 340px; overflow: hidden; border-radius: var(--radius-md); background: rgb(17 25 30 / 94%); box-shadow: var(--shadow-panel); opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity 180ms ease, transform 180ms ease, visibility 0s linear 180ms; }
   .event-feed.is-open { opacity: 1; visibility: visible; transform: translateY(0); transition-delay: 0s; }
-  .event-feed > header { display: grid; height: 46px; grid-template-columns: minmax(120px, 1fr) auto; align-items: stretch; border-bottom: 1px solid var(--color-divider); }
-  .event-feed > header > span { display: flex; align-items: center; gap: 7px; padding: 0 14px; color: var(--color-text-secondary); font-weight: 500; }
+  .event-feed > header { display: grid; height: 35px; grid-template-columns: minmax(108px, 1fr) auto; align-items: stretch; border-bottom: 1px solid var(--color-divider); font-size: 11px; }
+  .event-feed > header > span { display: flex; align-items: center; gap: 6px; padding: 0 12px; color: var(--color-text-secondary); font-weight: 500; }
   .event-feed nav { display: flex; }
-  .event-feed nav button { min-width: 54px; padding: 0 10px; border: 0; border-left: 1px solid var(--color-divider); color: var(--color-text-muted); background: transparent; cursor: pointer; }
+  .event-feed nav button { min-width: 48px; padding: 0 8px; border: 0; border-left: 1px solid var(--color-divider); color: var(--color-text-muted); background: transparent; cursor: pointer; }
   .event-feed nav button:hover { color: var(--color-text); background: var(--color-surface-hover); }
   .event-feed nav button.is-active { color: var(--color-amber); box-shadow: inset 0 -2px 0 var(--color-amber); }
   .event-feed__rows { display: grid; }
-  .event-feed__rows > button { display: grid; min-height: 46px; grid-template-columns: 16px 84px minmax(140px, 1fr) 78px 58px 78px; align-items: center; gap: 8px; padding: 0 14px; border: 0; border-bottom: 1px solid var(--color-divider); color: var(--color-text-secondary); background: transparent; cursor: pointer; font-size: 12px; text-align: left; }
+  .event-feed__rows > button { display: grid; min-height: 35px; grid-template-columns: 12px 68px minmax(96px, 1fr) 58px 46px 62px; align-items: center; gap: 6px; padding: 0 10px; border: 0; border-bottom: 1px solid var(--color-divider); color: var(--color-text-secondary); background: transparent; cursor: pointer; font-size: 11px; text-align: left; }
   .event-feed__rows > button:hover { background: var(--color-surface-hover); }
   .event-feed__rows i { width: 7px; height: 7px; border-radius: 50%; background: var(--color-cyan); }
   .event-feed__rows strong { overflow: hidden; color: var(--color-text); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
-  .event-feed__archive { display: flex; width: 100%; min-height: 46px; align-items: center; justify-content: center; gap: 8px; border: 0; color: var(--color-cyan); background: transparent; cursor: pointer; }
+  .event-feed__archive { display: flex; width: 100%; min-height: 42px; align-items: center; justify-content: center; gap: 8px; border: 0; color: var(--color-cyan); background: transparent; cursor: pointer; }
   .event-feed__archive:hover { background: var(--color-surface-hover); }
-
-  .map-action-dock { position: absolute; right: 20px; bottom: 20px; z-index: 500; display: flex; gap: 8px; }
-  .map-action-dock button { display: flex; min-width: 120px; height: 44px; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--color-divider); border-radius: var(--radius-sm); color: var(--color-text-secondary); background: var(--color-surface); cursor: pointer; }
-  .map-action-dock button.is-active, .map-action-dock button:hover { border-color: var(--color-cyan); color: var(--color-cyan); background: var(--color-surface-raised); }
 
   @media (max-width: 1100px) {
     .intel-workspace--map:has(> .detail-panel.is-open) .map-control-dock { right: 332px; }
     .selection-strip { max-width: calc(100% - 360px); }
-    .event-feed { width: 460px; min-width: 400px; }
-    .event-feed__rows > button { grid-template-columns: 14px 72px minmax(110px, 1fr) 66px 52px 66px; gap: 6px; }
+    .event-feed { width: 400px; min-width: 340px; }
+    .event-feed__rows > button { grid-template-columns: 10px 64px minmax(86px, 1fr) 54px 42px 58px; gap: 5px; }
   }
   @media (max-width: 760px) {
     .intel-workspace--map:has(> .detail-panel.is-open) .map-control-dock { right: 16px; }
@@ -59,7 +55,7 @@
     .selection-strip strong { max-width: 58%; }
     .selection-strip span, .selection-strip b { display: none; }
     .selection-strip time { flex: 0 0 auto; }
-    .event-feed { right: 16px; bottom: 72px; left: 16px; width: auto; max-height: min(42vh, 360px); min-width: 0; display: grid; grid-template-rows: 46px minmax(0, 1fr) 46px; }
+    .event-feed { right: 16px; bottom: 72px; left: 16px; width: auto; max-height: min(42vh, 360px); min-width: 0; display: grid; grid-template-rows: 35px minmax(0, 1fr) 42px; }
     .event-feed > header { grid-template-columns: 104px 1fr; }
     .event-feed > header > span { padding: 0 10px; }
     .event-feed nav { display: grid; grid-template-columns: repeat(4, 1fr); }
@@ -70,7 +66,5 @@
     .event-feed__rows .status { grid-column: 4; grid-row: 1; justify-self: end; }
     .maplibregl-ctrl-bottom-right { top: 60px; right: 10px; }
     .map-control-dock { top: 112px; right: 16px; bottom: auto; }
-    .map-action-dock { right: 16px; bottom: 16px; left: 16px; justify-content: flex-end; }
-    .map-action-dock button { min-width: 104px; }
   }
 }

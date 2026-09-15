@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { ListFilter, SlidersHorizontal } from "lucide-react";
 import { useLanguage } from "../i18n.jsx";
 import { displayCityName } from "../utils/locations";
 import { EventDetail } from "./EventDetail";
@@ -19,11 +18,8 @@ export function MapWorkspace({
   onFeedRegionChange,
   onOpenArchive,
   feedOpen,
-  onToggleFeed,
   detailOpen,
   onCloseDetail,
-  filtersOpen,
-  onToggleFilters,
 }) {
   const { formatNumber, language, t } = useLanguage();
 
@@ -73,28 +69,6 @@ export function MapWorkspace({
         onClose={onCloseDetail}
         compact
       />
-
-      <div className="map-action-dock">
-        <button
-          type="button"
-          className={feedOpen ? "is-active" : ""}
-          aria-expanded={feedOpen}
-          onClick={onToggleFeed}
-        >
-          <ListFilter size={20} strokeWidth={1.35} />
-          {t("activity")}
-        </button>
-        <button
-          type="button"
-          className={filtersOpen ? "is-active" : ""}
-          aria-expanded={filtersOpen}
-          aria-controls="filter-console"
-          onClick={onToggleFilters}
-        >
-          <SlidersHorizontal size={20} strokeWidth={1.35} />
-          {t("filters")}
-        </button>
-      </div>
     </>
   );
 }

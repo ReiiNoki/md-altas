@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Languages,
+  ListFilter,
   Search,
   SlidersHorizontal,
   X,
@@ -21,6 +22,8 @@ export function TopBar({
   onFilterChange,
   filtersOpen,
   onToggleFilters,
+  feedOpen,
+  onToggleFeed,
   activeFilterCount = 0,
   filterButtonRef,
 }) {
@@ -131,8 +134,19 @@ export function TopBar({
       </div>
 
       <button
+        className="intel-tool-button intel-activity-button"
+        type="button"
+        title={t("activity")}
+        aria-label={t("activity")}
+        aria-expanded={activeView === "map" ? feedOpen : undefined}
+        onClick={onToggleFeed}
+      >
+        <ListFilter size={18} strokeWidth={1.35} />
+      </button>
+
+      <button
         ref={filterButtonRef}
-        className="intel-tool-button"
+        className="intel-tool-button intel-filter-button"
         type="button"
         title={t("openFilters")}
         aria-label={t("openFilters")}

@@ -1,18 +1,19 @@
 @layer utilities {
   @media (max-width: 1100px) {
-    .intel-topbar { grid-template-columns: 144px minmax(190px, .8fr) minmax(150px, 1fr) 48px 48px; gap: 12px; padding-right: 16px; padding-left: 16px; }
+    .intel-topbar { grid-template-columns: 144px minmax(190px, .8fr) minmax(150px, 1fr) 48px 48px 48px; gap: 12px; padding-right: 16px; padding-left: 16px; }
     .intel-totals, .intel-select--region, .intel-select--year { display: none; }
     .intel-brand__text small { display: none; }
     .intel-tabs { grid-column: 2; }
     .intel-search { grid-column: 3; }
-    .intel-tool-button { grid-column: 4; }
-    .intel-language-button { grid-column: 5; }
+    .intel-activity-button { grid-column: 4; }
+    .intel-filter-button { grid-column: 5; }
+    .intel-language-button { grid-column: 6; }
     .archive-layout:not(.detail-closed) { grid-template-columns: minmax(0, 1fr) 360px; }
   }
   @media (max-width: 760px) {
     :root { --statusbar-height: 110px; }
     body { overflow: hidden; }
-    .intel-topbar { height: auto; grid-template-columns: minmax(0, 1fr) repeat(3, 44px); grid-template-rows: 48px 48px; gap: 0 8px; padding: 0 16px; }
+    .intel-topbar { height: auto; grid-template-columns: minmax(0, 1fr) repeat(4, 44px); grid-template-rows: 48px 48px; gap: 0 8px; padding: 0 16px; }
     .intel-topbar.has-search { grid-template-rows: 48px 48px 52px; }
     .intel-brand { grid-column: 1; grid-row: 1; font-size: 22px; }
     .intel-tabs { grid-column: 1 / -1; grid-row: 2; width: 100%; height: 44px; margin: 0; }
@@ -22,8 +23,10 @@
     .intel-topbar.has-search .intel-search { display: flex; }
     .intel-search input { font-size: 16px; }
     .intel-search button { width: 44px; height: 44px; flex: 0 0 44px; }
-    .intel-tool-button { grid-column: 3; grid-row: 1; align-self: center; width: 44px; height: 44px; }
-    .intel-language-button { grid-column: 4; grid-row: 1; align-self: center; width: 44px; height: 44px; }
+    .intel-tool-button { grid-row: 1; align-self: center; width: 44px; height: 44px; }
+    .intel-activity-button { grid-column: 3; }
+    .intel-filter-button { grid-column: 4; }
+    .intel-language-button { grid-column: 5; grid-row: 1; align-self: center; width: 44px; height: 44px; }
     .intel-statusbar { grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 7px 10px; font-size: 10px; }
     .intel-statusbar__links { justify-content: flex-end; padding-left: 0; border-left: 0; }
     .archive-screen, .calendar-view, .data-view { padding: 16px; overflow: hidden auto; }
@@ -39,8 +42,6 @@
     .event-facts > div, .event-facts > div:nth-child(odd) { grid-column: auto; margin-right: 0; }
     .selection-strip { top: 16px; right: 72px; left: 16px; min-width: 0; overflow: hidden; }
     .event-feed { right: 16px; bottom: 72px; left: 16px; width: auto; min-width: 0; }
-    .map-action-dock { right: 16px; bottom: 16px; left: 16px; justify-content: flex-end; }
-    .map-action-dock button { min-width: 104px; }
     .filter-console { position: absolute; top: 8px; right: 16px; bottom: auto; left: 16px; width: auto; max-height: calc(100% - 16px); overflow-y: auto; z-index: 1300; }
   }
   @media (max-width: 430px) {
