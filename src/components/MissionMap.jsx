@@ -133,7 +133,7 @@ export function MissionMap({ events, selectedEvent, onSelect }) {
       return undefined;
     }
 
-    map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    map.addControl(new maplibregl.AttributionControl({ compact: false }), "bottom-right");
     mapRef.current = map;
     // Search/filter rows can resize the workspace without a window resize.
     const resizeObserver = new ResizeObserver(() => map.resize());

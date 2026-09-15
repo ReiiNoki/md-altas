@@ -64,7 +64,7 @@
     .event-feed__rows > button { min-height: 54px; grid-template-columns: 12px 76px minmax(0, 1fr) 58px; gap: 6px; padding: 0 10px; }
     .event-feed__rows > button > span:nth-of-type(1), .event-feed__rows > button > span:nth-of-type(2) { display: none; }
     .event-feed__rows .status { grid-column: 4; grid-row: 1; justify-self: end; }
-    .maplibregl-ctrl-bottom-right { top: 60px; right: 10px; }
+    .maplibregl-ctrl-bottom-right { top: 60px; right: 10px; bottom: auto; }
     .map-control-dock { top: 112px; right: 16px; bottom: auto; }
   }
 }
