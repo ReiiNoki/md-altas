@@ -9,9 +9,10 @@ import {
 import { filterEvents, INITIAL_FILTERS, matchesQuery } from "../src/utils/archive.js";
 
 const overrides = [
+  ["CN", "China", "中国大陆"],
   ["TW", "Taiwan", "台湾地区"],
-  ["HK", "Hong Kong", "香港特别行政区"],
-  ["MO", "Macao", "澳门特别行政区"],
+  ["HK", "Hong Kong", "香港地区"],
+  ["MO", "Macao", "澳门地区"],
 ];
 
 test("country names use simplified Chinese in the Chinese interface", () => {
@@ -22,20 +23,19 @@ test("country names use simplified Chinese in the Chinese interface", () => {
     ["DE", "Germany", "德国"],
     ["US", "United States", "美国"],
     ["FR", "France", "法国"],
-    ["CN", "China", "中国"],
   ]) {
     assert.equal(displayCountryName(code, source, "zh"), expected);
     assert.equal(displayCountryName(code, source, "en"), source);
   }
 });
 
-test("approved TW, HK and MO display names override standard translations", () => {
+test("approved CN, TW, HK and MO display names override standard translations", () => {
   for (const [code, english, chinese] of overrides) {
     assert.equal(displayCountryName(code, english, "zh"), chinese);
     assert.equal(displayCountryName(code, english, "en"), english);
   }
   assert.equal(displayCountryName(undefined, "Macau", "en"), "Macao");
-  assert.equal(displayCountryName(null, "Hong Kong", "zh"), "香港特别行政区");
+  assert.equal(displayCountryName(null, "Hong Kong", "zh"), "香港地区");
 });
 
 test("code normalization and unknown names have safe fallbacks", () => {

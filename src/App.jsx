@@ -213,8 +213,10 @@ export default function App() {
 
   const filteredAnalyticsEvents = useMemo(() => {
     if (!analytics?.events) return [];
-    const visibleIds = new Set(filteredEvents.map((event) => event.id));
-    return analytics.events.filter((event) => visibleIds.has(event.id));
+    const visibleEvents = new Map(filteredEvents.map((event) => [event.id, event]));
+    return analytics.events
+      .filter((event) => visibleEvents.has(event.id))
+      .map((event) => ({ ...visibleEvents.get(event.id), ...event }));
   }, [analytics, filteredEvents]);
 
   if (loadState === "loading") {

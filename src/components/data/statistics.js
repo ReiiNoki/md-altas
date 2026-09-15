@@ -80,6 +80,7 @@ export function buildStatistics(events, unknownYearLabel) {
   const setSizes = new Map();
   const publishers = new Map();
   const missions = [];
+  const ratingEvents = [];
   let missionCount = 0;
   let activeMissions = 0;
   let ratingTotal = 0;
@@ -122,6 +123,10 @@ export function buildStatistics(events, unknownYearLabel) {
       setSizes.set(event.missionCount, (setSizes.get(event.missionCount) ?? 0) + 1);
     }
 
+    let eventRatingTotal = 0;
+    let eventRatedMissions = 0;
+    let eventCompletions = 0;
+
     for (const mission of event.missions) {
       missionCount += 1;
       if (!mission.offline) activeMissions += 1;
@@ -141,9 +146,11 @@ export function buildStatistics(events, unknownYearLabel) {
         publishers.set(mission.author, publisher);
       }
 
-      if (typeof mission.rating === "number") {
+      if (typeof mission.rating === "number" && mission.rating > 0) {
         ratingTotal += mission.rating;
         ratedMissions += 1;
+        eventRatingTotal += mission.rating;
+        eventRatedMissions += 1;
         if (region) {
           region.ratings += mission.rating;
           region.rated += 1;
@@ -152,6 +159,7 @@ export function buildStatistics(events, unknownYearLabel) {
 
       const completions = mission.completions ?? 0;
       totalCompletions += completions;
+      eventCompletions += completions;
       totalDistance += mission.distanceMeters ?? 0;
       totalTime += mission.timeMilliseconds ?? 0;
       year.completions += completions;
@@ -164,6 +172,20 @@ export function buildStatistics(events, unknownYearLabel) {
         city: event.city,
         country: event.country,
         countryCode: event.countryCode,
+      });
+    }
+
+    if (eventRatedMissions > 0) {
+      ratingEvents.push({
+        id: event.id,
+        title: event.title,
+        city: event.city,
+        country: event.country,
+        countryCode: event.countryCode,
+        missionCount: event.missionCount,
+        ratedMissions: eventRatedMissions,
+        rating: eventRatingTotal / eventRatedMissions,
+        completions: eventCompletions,
       });
     }
   }
@@ -188,6 +210,15 @@ export function buildStatistics(events, unknownYearLabel) {
   const countryRows = [...countries.values()].sort(
     (a, b) => b.missions - a.missions || b.events - a.events,
   );
+  const ratedMissionsList = missions.filter(
+    (mission) => typeof mission.rating === "number" && mission.rating > 0,
+  );
+  const ratingHigh = (a, b) =>
+    b.rating - a.rating || (b.completions ?? 0) - (a.completions ?? 0) ||
+    String(a.title ?? a.city).localeCompare(String(b.title ?? b.city));
+  const ratingLow = (a, b) =>
+    a.rating - b.rating || (b.completions ?? 0) - (a.completions ?? 0) ||
+    String(a.title ?? a.city).localeCompare(String(b.title ?? b.city));
 
   return {
     eventCount: events.length,
@@ -217,6 +248,10 @@ export function buildStatistics(events, unknownYearLabel) {
           b.completions - a.completions || (b.rating ?? 0) - (a.rating ?? 0),
       )
       .slice(0, 10),
+    topRatedEvents: [...ratingEvents].sort(ratingHigh).slice(0, 10),
+    lowestRatedEvents: [...ratingEvents].sort(ratingLow).slice(0, 10),
+    topRatedMissions: [...ratedMissionsList].sort(ratingHigh).slice(0, 10),
+    lowestRatedMissions: [...ratedMissionsList].sort(ratingLow).slice(0, 10),
     setSizes: [...setSizes.entries()]
       .map(([size, count]) => ({ size, count }))
       .sort((a, b) => b.count - a.count || a.size - b.size)

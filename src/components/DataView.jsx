@@ -11,6 +11,7 @@ import {
 import { useLanguage } from "../i18n.jsx";
 import { BreakdownPanels } from "./data/BreakdownPanels";
 import { PublisherPanel } from "./data/PublisherPanel";
+import { RatingRankingsPanel } from "./data/RatingRankingsPanel";
 import { StatBlock } from "./data/StatBlock";
 import {
   buildStatistics,
@@ -105,6 +106,12 @@ export function DataView({ events, onSelect }) {
         <PublisherPanel stats={stats} language={language} t={t} />
         <TopMissionsPanel
           missions={stats.topMissions}
+          language={language}
+          onSelect={onSelect}
+          t={t}
+        />
+        <RatingRankingsPanel
+          stats={stats}
           language={language}
           onSelect={onSelect}
           t={t}
